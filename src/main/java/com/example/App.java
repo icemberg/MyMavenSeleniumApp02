@@ -15,8 +15,11 @@ public class App {
         ChromeOptions options = new ChromeOptions();
 
         // Use a unique user data directory to avoid "already in use" error
-        Path tempProfile = Files.createTempDirectory("chrome-profile");
-        options.addArguments("--user-data-dir=" + tempProfile.toAbsolutePath());
+	Path tempProfile = Files.createTempDirectory("chrome-profile-" + System.nanoTime());
+	System.out.println("Using temp profile: " + tempProfile.toAbsolutePath());
+	options.addArguments("--user-data-dir=" + tempProfile.toAbsolutePath());
+
+	System.out.println("DISPLAY env: " + System.getenv("DISPLAY"));
 
         // Optional: Launch in full screen
         options.addArguments("--start-maximized");
