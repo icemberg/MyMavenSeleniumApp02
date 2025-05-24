@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         // Set a default fallback; actual value will be set in stage
-        DISPLAY = 'localhost:0'
+        DISPLAY = '192.168.3.123:0'
     }
 
     stages {
