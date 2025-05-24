@@ -30,6 +30,7 @@ pipeline {
         stage('Check GUI Access') {
 		    steps {
 			sh 'echo $DISPLAY'
+			sh 'xclock'
 		    }
 	}
        	stage('Kill Chrome') {
