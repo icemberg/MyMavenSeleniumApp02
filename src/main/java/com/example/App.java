@@ -22,7 +22,6 @@ public class App {
         options.addArguments("--user-data-dir=" + tempProfile.toAbsolutePath());
 
         // Optional for CI environments
-        options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
 
