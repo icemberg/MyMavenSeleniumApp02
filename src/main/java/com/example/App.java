@@ -1,3 +1,4 @@
+
 package com.example;
 
 import org.openqa.selenium.By;
@@ -8,39 +9,49 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 public class App {
     public static void main(String[] args) throws IOException {
         // Setup Chrome options
         ChromeOptions options = new ChromeOptions();
 
-        // Use a unique user data directory to avoid "already in use" error
-	Path tempProfile = Files.createTempDirectory("chrome-profile-" + System.nanoTime());
-	System.out.println("Using temp profile: " + tempProfile.toAbsolutePath());
-	options.addArguments("--user-data-dir=" + tempProfile.toAbsolutePath());
+        // Create isolated temp user profile
+        Path tempProfile = Files.createTempDirectory("chrome-profile-" + System.nanoTime());
+        System.out.println("Using temp profile: " + tempProfile.toAbsolutePath());
+        options.addArguments("--user-data-dir=" + tempProfile.toAbsolutePath());
 
-	System.out.println("DISPLAY env: " + System.getenv("DISPLAY"));
+        // Optional for CI environments
+        options.addArguments("--headless=new");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
 
-        // Optional: Launch in full screen
-        options.addArguments("--start-maximized");
-
-        // Create ChromeDriver with options
         WebDriver driver = new ChromeDriver(options);
 
-        // Your existing logic
-        driver.get("https://www.saucedemo.com/");
-        driver.findElement(By.id("user-name")).sendKeys("standard_user");
-        driver.findElement(By.id("password")).sendKeys("secret_sauce");
-        driver.findElement(By.id("login-button")).click();
-
-        // Wait so you can see the result (if running with GUI)
         try {
-            Thread.sleep(5000); // wait 5 seconds
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            driver.get("https://www.saucedemo.com/");
+            driver.findElement(By.id("user-name")).sendKeys("standard_user");
+            driver.findElement(By.id("password")).sendKeys("secret_sauce");
+            driver.findElement(By.id("login-button")).click();
 
-        driver.quit();
+            Thread.sleep(5000); // Pause to observe behavior
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            driver.quit();
+
+            // Clean up temp directory
+            try (Stream<Path> walk = Files.walk(tempProfile)) {
+                walk.sorted((a, b) -> b.compareTo(a)) // delete children first
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException e) {
+                            System.err.println("Failed to delete " + path + ": " + e.getMessage());
+                        }
+                    });
+            }
+        }
     }
 }
 
