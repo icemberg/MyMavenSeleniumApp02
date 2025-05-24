@@ -24,7 +24,11 @@ pipeline {
         }
 
         
-        
+        stage('Check GUI Access') {
+		    steps {
+			sh 'echo $DISPLAY'
+		    }
+	}
        	stage('Kill Chrome') {
     		steps {
         		sh 'pkill chrome || true'
