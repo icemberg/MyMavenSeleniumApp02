@@ -5,7 +5,7 @@ pipeline {
         maven 'Maven'  // Ensure this matches the name configured in Jenkins
     }
     environment {
-    	DISPLAY = sh(script: "cat /etc/resolv.conf | grep nameserver | awk '{print \$2}':0", returnStdout: true).trim()
+    	DISPLAY = sh(script: "cat /etc/resolv.conf | grep nameserver | awk '{print \$2}'| head -1", returnStdout: true).trim()+ ":0"
     }
     stages {
         stage('Checkout') {
