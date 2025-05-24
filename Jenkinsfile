@@ -25,7 +25,12 @@ pipeline {
 
         
         
-       
+       	stage('Kill Chrome') {
+    		steps {
+        		sh 'pkill chrome || true'
+        		sh 'pkill chromedriver || true'
+    		}
+	}
         stage('Run Application') {
             steps {
                 // Start the JAR application
@@ -37,6 +42,9 @@ pipeline {
     }
 
     post {
+    	always {
+        	cleanWs()
+    	}
         success {
             echo 'Build and deployment successful!'
         }
