@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 public class App {
     public static void main(String[] args) throws IOException {
         // Setup Chrome options
+        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
 
         // Create isolated temp user profile
